@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
-import URL from "../models/url";
+import URL from "../models/url.js";
+
 async function GenerateNewShortUrl(req,res){
     const body=req.body;
     if(!body.url) return res.status(400).json({error: "url is required"});
@@ -12,5 +13,13 @@ async function GenerateNewShortUrl(req,res){
     return res.json({id:shortID})
 
 }
+async function handleGetAnalytics(req,res){
+    const shortId=req.params.shortId;
+    const result=await URL.findOne({shortId});
+    return res.json({
+        totalClicks:result.visitHistory.length,
+        analytics:result.visitHistory
+    })
+}
 
-export { GenerateNewShortUrl };
+export { GenerateNewShortUrl,handleGetAnalytics };
